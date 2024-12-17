@@ -43,7 +43,7 @@ export function useChat() {
     
     try {
       const response = await sendMessage(text);
-      addMessage(response.content, false);
+      addMessage(response, false);
     } catch (error) {
       console.error('Error:', error);
       addMessage('抱歉，我现在无法回答你的问题。请稍后再试。', false);
