@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { config } from '../config/index.js';
 
 const HUGGINGFACE_API_URL = 'https://api-inference.huggingface.co/models/THUDM/chatglm2-6b';
 
@@ -7,7 +8,7 @@ export async function generateAIResponse(message) {
     const response = await fetch(HUGGINGFACE_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        'Authorization': `Bearer ${config.huggingfaceApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

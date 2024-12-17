@@ -1,28 +1,30 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { config } from './config/index.js';
 import { router as apiRouter } from './routes/api.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, '.env') });
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { requestLogger } from './middleware/requestLogger.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// CORS配置
+app.use(cors(config.cors));
 
 // 中间件
-app.use(cors());
 app.use(express.json());
+app.use(requestLogger);
 
-// 健康检查端点
+// 预检请求处理
+app.options('*', cors(config.cors));
+
+// 健康检查
 app.get('/healthz', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-// 根路由
+// API文档
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'online',
     message: 'FC UT GPT API is running',
     version: '1.0.0',
@@ -36,23 +38,18 @@ app.get('/', (req, res) => {
 // API路由
 app.use('/api', apiRouter);
 
-// 错误处理中间件
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: '服务器内部错误',
-    message: process.env.NODE_ENV === 'development' ? err.message : '请稍后再试'
-  });
+// 错误处理
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+// 启动服务器
+app.listen(config.port, () => {
+  console.log(`服务器运行在端口 ${config.port}`);
+  console.log(`环境: ${config.nodeEnv}`);
 });
 
-// 404处理
-app.use((req, res) => {
-  res.status(404).json({
-    error: '未找到请求的资源',
-    message: '请检查URL是否正确'
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`服务器运行在端口 ${PORT}`);
+// 优雅关闭
+process.on('SIGTERM', () => {
+  console.log('收到 SIGTERM 信号，准备关闭服务器...');
+  process.exit(0);
 });
