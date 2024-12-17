@@ -1,4 +1,4 @@
-const API_URL = 'https://fc-ut-gpt-api.onrender.com/api';  // 替换为你的 Render.com 服务地址
+const API_URL = process.env.VITE_API_URL || 'https://fc-ut-gpt-api.onrender.com/api';
 
 export async function sendMessage(message: string): Promise<string> {
   try {
