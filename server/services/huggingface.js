@@ -12,6 +12,12 @@ export async function generateAIResponse(message) {
       },
       body: JSON.stringify({
         inputs: `你是一个EA FC 25游戏的专业助手，名叫卡卡。请用专业的角度回答以下问题：${message}`,
+        parameters: {
+          max_length: 2048,
+          temperature: 0.7,
+          top_p: 0.9,
+          do_sample: true
+        }
       }),
     });
 
