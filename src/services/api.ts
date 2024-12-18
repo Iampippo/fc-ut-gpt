@@ -21,7 +21,11 @@ class ApiService {
     return response.json();
   }
 
-  private static async fetchWithRetry(url: string, config: RequestInit, retries = 3) {
+  private static async fetchWithRetry(
+    url: string, 
+    config: RequestInit, 
+    retries = 3
+  ): Promise<any> {
     try {
       const response = await fetch(url, config);
       return await this.handleResponse(response);
