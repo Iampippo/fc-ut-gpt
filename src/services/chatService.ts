@@ -1,24 +1,12 @@
-import { Message } from '../types';
+import ApiService from './api';
+import { ChatResponse } from '../types/api';
 
 export async function sendMessage(message: string): Promise<string> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message }),
-      credentials: 'include'
-    });
-    
-    if (!response.ok) {
-      throw new Error('API request failed');
-    }
-    
-    const data = await response.json();
-    return data.response;
+    const response = await ApiService.post<ChatResponse>('/chat', { message });
+    return response.response;
   } catch (error) {
-    console.error('Error:', error);
-    return '抱歉，我现在无法回答你的问题。请稍后再试。';
+    console.error('聊天服务错误:', error);
+    throw new Error('发送消息失败，请稍后重试');
   }
 }
