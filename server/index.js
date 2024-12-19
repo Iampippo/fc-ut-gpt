@@ -1,5 +1,5 @@
 import express from 'express';
-import { config } from './config/index.js';
+import { ENV } from './config/environment.js';
 import { setupMiddleware } from './middleware/index.js';
 import { router } from './routes/index.js';
 
@@ -8,13 +8,14 @@ const app = express();
 // 设置中间件
 setupMiddleware(app);
 
-// 路由
+// API路由
 app.use('/', router);
 
 // 启动服务器
-const server = app.listen(config.port, () => {
-  console.log(`服务器运行在端口 ${config.port}`);
-  console.log(`环境: ${config.nodeEnv}`);
+const server = app.listen(ENV.PORT, () => {
+  console.log(`服务器运行在端口 ${ENV.PORT}`);
+  console.log(`环境: ${ENV.NODE_ENV}`);
+  console.log('HuggingFace API 已配置');
 });
 
 // 优雅关闭

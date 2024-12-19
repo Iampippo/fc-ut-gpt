@@ -18,8 +18,10 @@ class ApiService {
         credentials: 'include',
         headers: {
           ...API_CONFIG.headers,
-          ...options.headers
-        }
+          ...options.headers,
+          'Origin': window.location.origin
+        },
+        mode: 'cors'
       });
 
       if (!response.ok) {

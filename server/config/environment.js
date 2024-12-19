@@ -8,11 +8,18 @@ dotenv.config({ path: join(__dirname, '../../.env') });
 export const ENV = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '3000', 10),
-  HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY,
+  HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY || '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',
   ALLOWED_ORIGINS: [
     'http://localhost:5173',
     'http://localhost:4173',
     'https://fc-ut-gpt-front.onrender.com',
     'https://fc-ut-gpt-front.netlify.app'
-  ]
+  ],
+  API_CONFIG: {
+    huggingface: {
+      baseUrl: 'https://api-inference.huggingface.co',
+      model: 'THUDM/chatglm2-6b',
+      timeout: 30000
+    }
+  }
 };

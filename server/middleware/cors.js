@@ -4,14 +4,14 @@ import { ENV } from '../config/environment.js';
 export const corsMiddleware = cors({
   origin: (origin, callback) => {
     // 允许没有origin的请求（比如同源请求）
-    if (!origin) {
+    if (!origin || ENV.NODE_ENV === 'development') {
       return callback(null, true);
     }
     
     if (ENV.ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error(`Origin ${origin} not allowed by CORS`));
+      callback(new Error('CORS policy violation'));
     }
   },
   credentials: true,

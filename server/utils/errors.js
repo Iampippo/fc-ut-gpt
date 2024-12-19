@@ -14,8 +14,14 @@ export class ValidationError extends AppError {
   }
 }
 
-export class NotFoundError extends AppError {
-  constructor(message = '未找到请求的资源') {
-    super(message, 404);
+export class ConfigurationError extends AppError {
+  constructor(message) {
+    super(message, 500);
+  }
+}
+
+export class ServiceUnavailableError extends AppError {
+  constructor(message = 'Service temporarily unavailable') {
+    super(message, 503);
   }
 }

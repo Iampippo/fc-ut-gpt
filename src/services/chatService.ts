@@ -1,5 +1,6 @@
 import ApiService from './api';
 import { ChatResponse } from '../types/api';
+import { handleApiError } from '../utils/errorHandling';
 
 export async function sendMessage(message: string): Promise<string> {
   try {
@@ -7,6 +8,6 @@ export async function sendMessage(message: string): Promise<string> {
     return response.response;
   } catch (error) {
     console.error('聊天服务错误:', error);
-    throw new Error('发送消息失败，请稍后重试');
+    throw handleApiError(error);
   }
 }
