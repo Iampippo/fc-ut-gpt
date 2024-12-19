@@ -10,7 +10,7 @@ export const config = {
   huggingfaceApiKey: process.env.HUGGINGFACE_API_KEY,
   nodeEnv: process.env.NODE_ENV || 'development',
   cors: {
-    origin: ['*'],
+    origin: ['https://fc-ut-gpt-front.onrender.com', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true

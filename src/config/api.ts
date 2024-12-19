@@ -5,7 +5,7 @@ const API_URL = isDev
 
 export const API_CONFIG = {
   baseUrl: API_URL,
-  timeout: 15000, // 增加超时时间到15秒
+  timeout: 30000, // 增加超时时间到30秒，匹配后端
   retryAttempts: 3,
   retryDelay: 1000,
   headers: {
