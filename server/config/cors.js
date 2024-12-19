@@ -1,12 +1,23 @@
-// CORS配置
-export const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:4173',
-    'https://fc-ut-gpt-front.onrender.com'
-  ],
+import cors from 'cors';
+import { ENV } from '../config/environment.js';
+
+export const corsMiddleware = cors({
+  origin: (origin, callback) => {
+    // 允许没有origin的请求（比如同源请求）
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // 检查origin是否在允许列表中
+    if (ENV.ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked request from unauthorized origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  maxAge: 86400 // 预检请求缓存24小时
-};
+  maxAge: 86400 // 24 hours
+});
