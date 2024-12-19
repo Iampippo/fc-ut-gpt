@@ -19,7 +19,7 @@ export const ENV = {
   ALLOWED_ORIGINS: [
     'http://localhost:5173',
     'http://localhost:4173',
-    'https://fc-ut-gpt.onrender.com' // 更新为正确的前端域名
+    'https://fc-ut-gpt-front.onrender.com'  // 更新为正确的前端域名
   ].filter(Boolean),
   API_CONFIG: {
     huggingface: {
