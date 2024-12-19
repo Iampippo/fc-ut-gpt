@@ -8,8 +8,8 @@ const app = express();
 // 设置中间件
 setupMiddleware(app);
 
-// 设置路由
-app.use(router);
+// 路由
+app.use('/', router);
 
 // 启动服务器
 const server = app.listen(config.port, () => {

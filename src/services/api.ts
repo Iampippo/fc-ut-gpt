@@ -1,52 +1,57 @@
 import { API_CONFIG } from '../config/api';
+import { ApiError } from '../types/api';
+import toast from 'react-hot-toast';
 
-/**
- * 基础API请求配置
- */
-const baseConfig: RequestInit = {
-  credentials: 'include',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-};
-
-/**
- * API请求工具类
- */
 class ApiService {
-  private static async handleResponse(response: Response) {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  private static async request<T>(
+    endpoint: string,
+    options: RequestInit
+  ): Promise<T> {
+    const url = `${API_CONFIG.baseUrl}${endpoint}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        credentials: 'include',
+        headers: {
+          ...API_CONFIG.headers,
+          ...options.headers
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json() as ApiError;
+        throw new Error(error.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new Error('请求超时');
+        }
+        throw error;
+      }
+      throw new Error('未知错误');
+    } finally {
+      clearTimeout(timeoutId);
     }
-    return response.json();
   }
 
-  private static async fetchWithRetry(
-    url: string, 
-    config: RequestInit, 
-    retries = 3
-  ): Promise<any> {
+  static async post<T>(endpoint: string, data: unknown): Promise<T> {
     try {
-      const response = await fetch(url, config);
-      return await this.handleResponse(response);
+      return await this.request<T>(endpoint, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      });
     } catch (error) {
-      if (retries > 0) {
-        console.log(`重试请求... 剩余次数: ${retries - 1}`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return this.fetchWithRetry(url, config, retries - 1);
-      }
+      console.error('API Error:', error);
+      toast.error(error instanceof Error ? error.message : '请求失败');
       throw error;
     }
-  }
-
-  static async post<T>(endpoint: string, data: any): Promise<T> {
-    const config = {
-      ...baseConfig,
-      method: 'POST',
-      body: JSON.stringify(data)
-    };
-
-    return this.fetchWithRetry(`${API_CONFIG.baseUrl}${endpoint}`, config);
   }
 }
 
