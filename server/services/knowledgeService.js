@@ -35,10 +35,16 @@ async function loadKnowledgeBase() {
 export async function findAnswer(message) {
   const knowledge = await loadKnowledgeBase();
   
+  // 如果是简单的问候语，返回默认回复
+  if (isGreeting(message)) {
+    return "你好！我是卡卡，很高兴为您服务。您可以问我关于球员、SBC、进化或者卡包的问题。";
+  }
+  
   // 遍历所有知识条目
   for (const [key, entry] of Object.entries(knowledge)) {
-    // 检查主关键词
+    // 检查主关键词（不区分大小写）
     if (message.toLowerCase().includes(key.toLowerCase())) {
+      console.log(`找到匹配的知识条目: ${key}`);
       return entry.content;
     }
     
@@ -46,11 +52,22 @@ export async function findAnswer(message) {
     if (entry.keywords?.some(keyword => 
       message.toLowerCase().includes(keyword.toLowerCase())
     )) {
+      console.log(`通过关键词匹配到知识条目: ${key}`);
       return entry.content;
     }
   }
   
+  // 如果没有找到匹配的答案，返回null让AI服务处理
+  console.log('本地知识库没有找到匹配的答案');
   return null;
+}
+
+// 检查是否是问候语
+function isGreeting(message) {
+  const greetings = ['你好', '您好', 'hi', 'hello', '嗨', '在吗'];
+  return greetings.some(greeting => 
+    message.toLowerCase().includes(greeting.toLowerCase())
+  );
 }
 
 // 重新加载知识库

@@ -15,14 +15,19 @@ class ApiService {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-        credentials: 'include',
         headers: {
           ...API_CONFIG.headers,
-          ...options.headers,
-          'Origin': window.location.origin
-        },
-        mode: 'cors'
+          ...options.headers
+        }
       });
+
+      clearTimeout(timeoutId);
+
+      // 检查响应类型
+      const contentType = response.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        throw new Error('Invalid response format: Expected JSON');
+      }
 
       if (!response.ok) {
         const error = await response.json() as ApiError;
@@ -33,13 +38,11 @@ class ApiService {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new Error('请求超时');
+          throw new Error('请求超时，请稍后重试');
         }
         throw error;
       }
       throw new Error('未知错误');
-    } finally {
-      clearTimeout(timeoutId);
     }
   }
 

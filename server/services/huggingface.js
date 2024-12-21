@@ -6,13 +6,15 @@ const API_CONFIG = ENV.API_CONFIG.huggingface;
 
 export async function generateAIResponse(message) {
   if (!ENV.HUGGINGFACE_API_KEY) {
-    throw new AppError('HuggingFace API key not configured', 500);
+    console.error('HuggingFace API key not configured');
+    return null; // 返回null而不是抛出错误，允许回退到默认回复
   }
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), API_CONFIG.timeout);
 
   try {
+    console.log('Sending request to HuggingFace API...');
     const response = await fetch(`${API_CONFIG.baseUrl}/models/${API_CONFIG.model}`, {
       method: 'POST',
       headers: {
@@ -32,21 +34,16 @@ export async function generateAIResponse(message) {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new AppError(error.error || 'HuggingFace API request failed', response.status);
+      console.error('HuggingFace API error:', response.status);
+      return null; // 返回null而不是抛出错误
     }
 
     const data = await response.json();
-    return data[0].generated_text;
+    console.log('HuggingFace API response received');
+    return data[0]?.generated_text || null;
   } catch (error) {
     console.error('HuggingFace API Error:', error);
-    if (error.name === 'AbortError') {
-      throw new AppError('请求超时，请稍后重试', 408);
-    }
-    if (error instanceof AppError) {
-      throw error;
-    }
-    throw new AppError('AI服务暂时不可用', 503);
+    return null; // 返回null而不是抛出错误
   } finally {
     clearTimeout(timeout);
   }
