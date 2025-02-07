@@ -12,7 +12,9 @@ export const ENV = {
   ALLOWED_ORIGINS: [
     'http://localhost:5173',
     'http://localhost:4173',
-    'https://fc-ut-gpt.stackblitz.io'
+    'https://fc-ut-gpt-front.onrender.com',
+    'https://fc-ut-gpt.onrender.com',
+    'https://fc-ut-gpt-api.onrender.com'
   ].filter(Boolean),
   API_CONFIG: {
     huggingface: {

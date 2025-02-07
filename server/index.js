@@ -1,9 +1,13 @@
 import express from 'express';
 import { ENV } from './config/environment.js';
+import { corsMiddleware } from './middleware/cors.js';
 import { setupMiddleware } from './middleware/index.js';
 import { router } from './routes/index.js';
 
 const app = express();
+
+// 首先应用CORS中间件
+app.use(corsMiddleware);
 
 // 验证环境配置
 console.log('Environment Configuration:', {
@@ -13,7 +17,7 @@ console.log('Environment Configuration:', {
   huggingfaceConfigured: !!ENV.HUGGINGFACE_API_KEY
 });
 
-// 设置中间件
+// 设置其他中间件
 setupMiddleware(app);
 
 // API路由

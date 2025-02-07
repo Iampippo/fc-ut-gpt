@@ -8,6 +8,8 @@ class ApiService {
     options: RequestInit
   ): Promise<T> {
     const url = `${API_CONFIG.baseUrl}${endpoint}`;
+    console.log('Sending request to:', url);
+    
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
 
@@ -22,20 +24,19 @@ class ApiService {
       });
 
       clearTimeout(timeoutId);
-
-      // 检查响应类型
-      const contentType = response.headers.get('content-type');
-      if (!contentType?.includes('application/json')) {
-        throw new Error('Invalid response format: Expected JSON');
-      }
+      console.log('Response status:', response.status);
 
       if (!response.ok) {
         const error = await response.json() as ApiError;
+        console.error('API Error:', error);
         throw new Error(error.message || `HTTP error! status: ${response.status}`);
       }
 
-      return response.json();
+      const data = await response.json();
+      console.log('Response data:', data);
+      return data;
     } catch (error) {
+      console.error('Request error:', error);
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           throw new Error('请求超时，请稍后重试');
@@ -50,7 +51,9 @@ class ApiService {
     try {
       return await this.request<T>(endpoint, {
         method: 'POST',
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include',
+        mode: 'cors'
       });
     } catch (error) {
       console.error('API Error:', error);
