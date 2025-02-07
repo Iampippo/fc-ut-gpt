@@ -20,16 +20,18 @@ class ApiService {
         headers: {
           ...API_CONFIG.headers,
           ...options.headers
-        }
+        },
+        mode: 'cors'
       });
 
       clearTimeout(timeoutId);
       console.log('Response status:', response.status);
 
       if (!response.ok) {
-        const error = await response.json() as ApiError;
-        console.error('API Error:', error);
-        throw new Error(error.message || `HTTP error! status: ${response.status}`);
+        console.error('Response not OK:', response.status);
+        const text = await response.text();
+        console.error('Error response:', text);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -52,7 +54,6 @@ class ApiService {
       return await this.request<T>(endpoint, {
         method: 'POST',
         body: JSON.stringify(data),
-        credentials: 'include',
         mode: 'cors'
       });
     } catch (error) {

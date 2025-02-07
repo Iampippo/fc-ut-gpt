@@ -9,18 +9,17 @@ export const ENV = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '3000', 10),
   HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY,
-  ALLOWED_ORIGINS: [
-    'http://localhost:5173',
-    'http://localhost:4173',
-    'https://fc-ut-gpt-front.onrender.com',
-    'https://fc-ut-gpt.onrender.com',
-    'https://fc-ut-gpt-api.onrender.com'
-  ].filter(Boolean),
+  ALLOWED_ORIGINS: '*', // 临时允许所有来源
   API_CONFIG: {
     huggingface: {
-      baseUrl: 'https://api-inference.huggingface.co',
-      model: 'THUDM/chatglm3-6b',
+      model: 'deepseek-ai/DeepSeek-R1',
+      baseUrl: 'https://api-inference.huggingface.co/models/deepseek-ai/DeepSeek-R1',
       timeout: 30000
     }
   }
 };
+
+// 验证必要的环境变量
+if (!process.env.HUGGINGFACE_API_KEY) {
+  console.error('警告: 未配置 HUGGINGFACE_API_KEY 环境变量');
+}

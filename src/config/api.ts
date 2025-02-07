@@ -1,7 +1,7 @@
 const isDev = import.meta.env.DEV;
 const API_URL = isDev 
   ? 'http://localhost:3000/api'
-  : 'https://fc-ut-gpt.onrender.com/api';
+  : 'https://fc-ut-gpt-api.onrender.com/api';
 
 console.log('API URL:', API_URL);
 
