@@ -9,7 +9,11 @@ export const ENV = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '3000', 10),
   HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY,
-  ALLOWED_ORIGINS: '*', // 临时允许所有来源
+  ALLOWED_ORIGINS: [
+    'https://fc-ut-gpt-front.onrender.com',
+    'http://localhost:5173',
+    'http://localhost:4173'
+  ],
   API_CONFIG: {
     huggingface: {
       model: 'deepseek-ai/DeepSeek-R1',
@@ -19,7 +23,12 @@ export const ENV = {
   }
 };
 
-// 验证必要的环境变量
-if (!process.env.HUGGINGFACE_API_KEY) {
+// 验证环境变量
+if (!ENV.HUGGINGFACE_API_KEY) {
   console.error('警告: 未配置 HUGGINGFACE_API_KEY 环境变量');
+}
+
+// 打印允许的域名（不显示在生产环境）
+if (ENV.NODE_ENV !== 'production') {
+  console.log('允许的域名:', ENV.ALLOWED_ORIGINS);
 }
