@@ -27,7 +27,7 @@ app.use('/', router);
 const server = app.listen(ENV.PORT, () => {
   console.log(`服务器运行在端口 ${ENV.PORT}`);
   console.log(`环境: ${ENV.NODE_ENV}`);
-  console.log(`允许的域名: ${ENV.ALLOWED_ORIGINS.join(', ')}`);
+  console.log(`允许的域名: ${ENV.ALLOWED_ORIGINS}`); // 移除 join 方法调用
   console.log('HuggingFace API 已配置');
 });
 
