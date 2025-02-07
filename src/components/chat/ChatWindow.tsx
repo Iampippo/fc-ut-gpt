@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, Cpu, User, Loader2 } from 'lucide-react';
-import { defaultGreeting } from '../../utils/chatResponses';
 import ChatSuggestions from './ChatSuggestions';
 import { useChat } from '../../hooks/useChat';
 import { useScrollToBottom } from '../../hooks/useScrollToBottom';
@@ -31,10 +30,6 @@ export default function ChatWindow() {
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 1 && (
-          <ChatSuggestions onSuggestionClick={onSend} />
-        )}
-        
         <MessageList messages={messages} />
         
         {isTyping && (

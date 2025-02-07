@@ -7,7 +7,7 @@ const API_CONFIG = ENV.API_CONFIG.huggingface;
 export async function generateAIResponse(message) {
   if (!ENV.HUGGINGFACE_API_KEY) {
     console.error('HuggingFace API key not configured');
-    return null; // 返回null而不是抛出错误，允许回退到默认回复
+    throw new AppError('API key not configured');
   }
 
   const controller = new AbortController();
@@ -34,16 +34,15 @@ export async function generateAIResponse(message) {
     });
 
     if (!response.ok) {
-      console.error('HuggingFace API error:', response.status);
-      return null; // 返回null而不是抛出错误
+      throw new AppError(`HuggingFace API error: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('HuggingFace API response received');
-    return data[0]?.generated_text || null;
+    return data[0]?.generated_text;
   } catch (error) {
     console.error('HuggingFace API Error:', error);
-    return null; // 返回null而不是抛出错误
+    throw error;
   } finally {
     clearTimeout(timeout);
   }

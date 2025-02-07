@@ -17,7 +17,7 @@ export const ENV = {
   API_CONFIG: {
     huggingface: {
       baseUrl: 'https://api-inference.huggingface.co',
-      model: 'THUDM/chatglm3-6b', // 更新为正确的模型名称
+      model: 'THUDM/chatglm3-6b',
       timeout: 30000
     }
   }
